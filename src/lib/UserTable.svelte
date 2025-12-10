@@ -499,10 +499,12 @@
 
   .modal-form {
     padding: 24px;
+    text-align: left;
   }
 
   .form-group {
     margin-bottom: 20px;
+    text-align: left;
   }
 
   .form-group label {
@@ -511,11 +513,14 @@
     font-weight: 500;
     color: #374151;
     font-size: 14px;
+    text-align: left;
   }
 
   .form-group input,
   .form-group select {
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     padding: 10px 12px;
     border: 1px solid #d1d5db;
     border-radius: 6px;
