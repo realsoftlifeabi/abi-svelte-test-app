@@ -552,6 +552,7 @@
     .modal {
       width: 95%;
       margin: 20px;
+      max-height: 85vh;
     }
 
     .modal-form {
@@ -560,6 +561,65 @@
 
     .modal-actions {
       flex-direction: column;
+    }
+
+    .user-table-container {
+      padding: 10px;
+    }
+
+    .user-table th,
+    .user-table td {
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+
+    .actions {
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .btn {
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+
+    .role-badge {
+      font-size: 10px;
+      padding: 2px 8px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .user-table-container {
+      padding: 5px;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    .user-table th,
+    .user-table td {
+      padding: 6px 8px;
+      font-size: 12px;
+    }
+
+    .search-input {
+      font-size: 14px;
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+    }
+
+    .modal-form {
+      padding: 16px;
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 8px 10px;
+      font-size: 14px;
     }
   }
 </style>
