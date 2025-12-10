@@ -1,6 +1,9 @@
 <script lang="ts">
   import { users, nextId } from '../stores';
   import type { User, FormData } from '../types';
+  import ThemeToggle from './ThemeToggle.svelte';
+  import Alert from './Alert.svelte';
+  import { fly, fade, slide } from 'svelte/transition';
   
   let searchTerm = '';
   let filteredUsers: User[] = [];
@@ -16,6 +19,8 @@
   };
   let usersList: User[] = [];
   let currentNextId = 5;
+  let alerts: Array<{ id: number; type: 'success' | 'error' | 'warning' | 'info'; message: string }> = [];
+  let alertId = 0;
 
   users.subscribe((value: User[]) => {
     usersList = value;
@@ -29,6 +34,15 @@
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  function showAlert(type: 'success' | 'error' | 'warning' | 'info', message: string) {
+    const id = ++alertId;
+    alerts = [...alerts, { id, type, message }];
+  }
+
+  function dismissAlert(id: number) {
+    alerts = alerts.filter(alert => alert.id !== id);
+  }
 
   function handleEdit(userId: number) {
     const user = usersList.find((u: User) => u.id === userId);
@@ -70,11 +84,13 @@
               : user
           )
         );
+        showAlert('success', 'User updated successfully!');
       } else {
         // Add new user
         const newId = currentNextId;
         nextId.update((n: number) => n + 1);
         users.update((currentUsers: User[]) => [...currentUsers, { id: newId, ...formData }]);
+        showAlert('success', 'User added successfully!');
       }
       closeModal();
     }
@@ -83,6 +99,7 @@
   function confirmDelete() {
     if (deletingUserId) {
       users.update((currentUsers: User[]) => currentUsers.filter((user: User) => user.id !== deletingUserId));
+      showAlert('success', 'User deleted successfully!');
       closeDeleteConfirm();
     }
   }
@@ -100,11 +117,25 @@
 </script>
 
 <div class="user-table-container">
+  <!-- Alerts -->
+  <div class="alerts-container">
+    {#each alerts as alert (alert.id)}
+      <Alert 
+        type={alert.type} 
+        message={alert.message} 
+        on:dismiss={() => dismissAlert(alert.id)}
+      />
+    {/each}
+  </div>
+
   <div class="header-actions">
     <h2>User Management</h2>
-    <button class="btn btn-primary" on:click={openModal}>
-      Add New User
-    </button>
+    <div class="header-right">
+      <ThemeToggle />
+      <button class="btn btn-primary" on:click={openModal}>
+        Add New User
+      </button>
+    </div>
   </div>
 
   <div class="search-container">
@@ -120,7 +151,8 @@
       </button>
     {/if}
   </div>
-  <table class="user-table">
+  <div class="table-wrapper">
+    <table class="user-table">
     <thead>
       <tr>
         <th>Name</th>
@@ -157,9 +189,10 @@
       {/each}
     </tbody>
   </table>
+  </div>
 
   {#if filteredUsers.length === 0 && searchTerm}
-    <div class="no-results">
+    <div class="no-results" transition:slide={{ duration: 200 }}>
       <p>No users found matching "{searchTerm}"</p>
     </div>
   {/if}
@@ -175,8 +208,12 @@
     tabindex="-1"
     on:click={handleBackdropClick}
     on:keydown={(e) => e.key === 'Escape' && closeModal()}
+    transition:fade={{ duration: 200 }}
   >
-    <div class="modal">
+    <div 
+      class="modal" 
+      transition:fly={{ y: 20, duration: 300 }}
+    >
       <div class="modal-header">
         <h3 id="modal-title">{isEditMode ? 'Edit User' : 'Add New User'}</h3>
         <button class="modal-close" on:click={closeModal} aria-label="Close modal">×</button>
@@ -236,8 +273,12 @@
     aria-labelledby="delete-title"
     tabindex="-1"
     on:keydown={(e) => e.key === 'Escape' && closeDeleteConfirm()}
+    transition:fade={{ duration: 200 }}
   >
-    <div class="modal modal-sm">
+    <div 
+      class="modal modal-sm" 
+      transition:fly={{ y: -20, duration: 250 }}
+    >
       <div class="modal-header">
         <h3 id="delete-title">Confirm Delete</h3>
         <button class="modal-close" on:click={closeDeleteConfirm} aria-label="Close modal">×</button>
@@ -260,10 +301,18 @@
 {/if}
 
 <style>
+  .alerts-container {
+    margin-bottom: 20px;
+  }
+
   .user-table-container {
     padding: 20px;
-    max-width: 1000px;
+    max-width: 100%;
     margin: 0 auto;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
 
   .header-actions {
@@ -271,6 +320,12 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+  }
+
+  .header-right {
+    display: flex;
+    gap: 12px;
+    align-items: center;
   }
 
   .search-container {
@@ -313,35 +368,88 @@
 
   h2 {
     margin: 0;
-    color: #333;
+    color: var(--text-primary);
     font-size: 24px;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    margin: 0 -20px;
+    padding: 0 20px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+  }
+
+  .table-wrapper::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .table-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 4px;
+    border: 2px solid transparent;
+  }
+
+  .table-wrapper::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-tertiary);
   }
 
   .user-table {
     width: 100%;
+    min-width: 600px;
     border-collapse: collapse;
-    background: white;
+    background: var(--bg-primary);
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
   }
 
   .user-table th,
   .user-table td {
     padding: 12px 16px;
     text-align: left;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+  }
+
+  .user-table th:nth-child(1),
+  .user-table td:nth-child(1) {
+    width: 180px;
+    min-width: 120px;
+  }
+
+  .user-table th:nth-child(2),
+  .user-table td:nth-child(2) {
+    width: 250px;
+    min-width: 150px;
+  }
+
+  .user-table th:nth-child(3),
+  .user-table td:nth-child(3) {
+    width: 100px;
+    min-width: 80px;
+  }
+
+  .user-table th:nth-child(4),
+  .user-table td:nth-child(4) {
+    width: 120px;
+    min-width: 100px;
   }
 
   .user-table th {
-    background-color: #f9fafb;
+    background-color: var(--bg-tertiary);
     font-weight: 600;
-    color: #374151;
-    border-bottom: 2px solid #e5e7eb;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border-color);
   }
 
   .user-table tbody tr:hover {
-    background-color: #f9fafb;
+    background-color: var(--bg-hover);
   }
 
   .user-table tbody tr:last-child td {
@@ -543,6 +651,10 @@
   }
 
   @media (max-width: 768px) {
+    .user-table-container {
+      padding: 10px;
+    }
+
     .header-actions {
       flex-direction: column;
       gap: 16px;
@@ -568,14 +680,39 @@
       flex-direction: column;
     }
 
-    .user-table-container {
-      padding: 10px;
+    .table-wrapper {
+      margin: 0 -10px;
+      padding: 0 10px;
     }
 
     .user-table th,
     .user-table td {
       padding: 8px 12px;
       font-size: 14px;
+    }
+
+    .user-table th:nth-child(1),
+    .user-table td:nth-child(1) {
+      width: 150px;
+      min-width: 100px;
+    }
+
+    .user-table th:nth-child(2),
+    .user-table td:nth-child(2) {
+      width: 200px;
+      min-width: 120px;
+    }
+
+    .user-table th:nth-child(3),
+    .user-table td:nth-child(3) {
+      width: 80px;
+      min-width: 60px;
+    }
+
+    .user-table th:nth-child(4),
+    .user-table td:nth-child(4) {
+      width: 100px;
+      min-width: 80px;
     }
 
     .actions {
@@ -599,6 +736,11 @@
       padding: 5px;
     }
 
+    .table-wrapper {
+      margin: 0 -5px;
+      padding: 0 5px;
+    }
+
     h2 {
       font-size: 20px;
     }
@@ -607,6 +749,30 @@
     .user-table td {
       padding: 6px 8px;
       font-size: 12px;
+    }
+
+    .user-table th:nth-child(1),
+    .user-table td:nth-child(1) {
+      width: 120px;
+      min-width: 80px;
+    }
+
+    .user-table th:nth-child(2),
+    .user-table td:nth-child(2) {
+      width: 150px;
+      min-width: 100px;
+    }
+
+    .user-table th:nth-child(3),
+    .user-table td:nth-child(3) {
+      width: 70px;
+      min-width: 50px;
+    }
+
+    .user-table th:nth-child(4),
+    .user-table td:nth-child(4) {
+      width: 80px;
+      min-width: 60px;
     }
 
     .search-input {
