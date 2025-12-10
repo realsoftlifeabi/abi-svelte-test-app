@@ -1,34 +1,51 @@
 <script lang="ts">
   import UserTable from './lib/UserTable.svelte';
-  import Counter from './lib/Counter.svelte';
+  import { fade } from 'svelte/transition';
   import './app.css';
 </script>
 
 <main>
-  <h1>Welcome to SvelteKit</h1>
-  <p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+  <div class="dashboard-header" transition:fade>
+    <h1>User Management Dashboard</h1>
+    <p class="subtitle">Manage your users easily</p>
+  </div>
   
   <UserTable />
-  
-  <div class="card">
-    <Counter />
-  </div>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
 </main>
 
 <style>
-  .card {
-    padding: 2em;
+  .dashboard-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem 1rem;
   }
 
-  .read-the-docs {
-    color: #888;
+  h1 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+    font-size: 2.5rem;
+    font-weight: 700;
+  }
+
+  .subtitle {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    font-weight: 400;
+  }
+
+  @media (max-width: 768px) {
+    .dashboard-header {
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+    }
   }
 </style>
