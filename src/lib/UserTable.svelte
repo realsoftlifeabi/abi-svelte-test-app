@@ -485,13 +485,17 @@
   }
 
   .btn {
-    padding: 6px 12px;
+    padding: 8px 16px;
     border: none;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
     transition: all 0.2s;
     font-weight: 500;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .btn:hover {
@@ -549,13 +553,16 @@
   }
 
   .modal {
-    background: white;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     width: 90%;
     max-width: 500px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
   }
 
   .modal-header {
@@ -564,6 +571,7 @@
     align-items: center;
     padding: 24px 32px 20px;
     border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
   }
 
   .modal-header h3 {
@@ -611,6 +619,8 @@
   .modal-form {
     padding: 32px;
     text-align: left;
+    flex: 1;
+    overflow-y: auto;
   }
 
   .form-group {
@@ -622,7 +632,7 @@
     display: block;
     margin-bottom: 6px;
     font-weight: 500;
-    color: #374151;
+    color: var(--text-primary);
     font-size: 14px;
     text-align: left;
   }
@@ -633,17 +643,19 @@
     max-width: 100%;
     box-sizing: border-box;
     padding: 10px 12px;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     font-size: 14px;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
     transition: border-color 0.2s;
   }
 
   .form-group input:focus,
   .form-group select:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
   }
 
   .modal-actions {
@@ -652,6 +664,7 @@
     justify-content: flex-end;
     margin-top: 32px;
     padding: 0 32px 32px;
+    flex-shrink: 0;
   }
 
   @media (max-width: 768px) {
