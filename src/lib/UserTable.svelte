@@ -562,15 +562,15 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 24px;
-    border-bottom: 1px solid #e5e7eb;
+    padding: 24px 32px 20px;
+    border-bottom: 1px solid var(--border-color);
   }
 
   .modal-header h3 {
     margin: 0;
     font-size: 18px;
     font-weight: 600;
-    color: #111827;
+    color: var(--text-primary);
   }
 
   .modal-close {
@@ -578,26 +578,29 @@
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: #6b7280;
+    color: var(--text-secondary);
     padding: 0;
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
   }
 
   .modal-close:hover {
-    color: #374151;
+    color: var(--text-primary);
+    background-color: var(--bg-hover);
   }
 
   .modal-content {
-    padding: 0 24px 20px;
+    padding: 0 32px 24px;
   }
 
   .modal-content p {
     margin: 0;
-    color: #6b7280;
+    color: var(--text-secondary);
     line-height: 1.5;
   }
 
@@ -606,7 +609,7 @@
   }
 
   .modal-form {
-    padding: 24px;
+    padding: 32px;
     text-align: left;
   }
 
@@ -647,7 +650,8 @@
     display: flex;
     gap: 12px;
     justify-content: flex-end;
-    margin-top: 24px;
+    margin-top: 32px;
+    padding: 0 32px 32px;
   }
 
   @media (max-width: 768px) {
@@ -780,11 +784,15 @@
     }
 
     .modal-header {
-      padding: 16px 20px;
+      padding: 20px 24px 16px;
     }
 
     .modal-form {
-      padding: 16px;
+      padding: 24px;
+    }
+
+    .modal-actions {
+      padding: 0 24px 24px;
     }
 
     .form-group input,
